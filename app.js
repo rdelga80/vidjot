@@ -4,6 +4,7 @@ const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
 const flash = require('connect-flash')
 const session = require('express-session')
+const passport = require('passport')
 const bodyParser = require('body-parser')
 
 const app = express()
@@ -11,6 +12,9 @@ const app = express()
 // Load routes
 const ideas = require('./routes/ideas')
 const users = require('./routes/users')
+
+// passport config
+require('./config/passport')(passport)
 
 // Handlebars Middlewear
 app.engine('handlebars', exphbs({
@@ -35,6 +39,10 @@ app.use(session({
   saveUninitialized: true
 }))
 
+// passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
+
 // connect flash middleware
 app.use(flash())
 
@@ -43,6 +51,7 @@ app.use(function(req, res, next) {
   res.locals.success_msg = req.flash('success_msg')
   res.locals.error_msg = req.flash('error_msg')
   res.locals.error = req.flash('error')
+  res.locals.user = req.user || null
   next()
 })
 
