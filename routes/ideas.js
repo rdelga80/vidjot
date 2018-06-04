@@ -9,11 +9,6 @@ const { ensureAuthenticated } = require('../helpers/auth')
 require('../models/Idea')
 const Idea = mongoose.model('ideas')
 
-// Connect to mongoose
-mongoose.connect('mongodb://localhost/vidjot-dev', {})
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.log(err))
-
 // idea index page
 router.get('/', ensureAuthenticated, (req, res) => {
   Idea.find({ user: req.user.id })

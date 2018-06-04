@@ -2,6 +2,7 @@ const express = require('express')
 const path = require('path')
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
+const mongoose = require('mongoose')
 const flash = require('connect-flash')
 const session = require('express-session')
 const passport = require('passport')
@@ -15,6 +16,14 @@ const users = require('./routes/users')
 
 // passport config
 require('./config/passport')(passport)
+
+// db config
+const db = require('./config/database')
+
+// Connect to mongoose
+mongoose.connect(db.mongoURI, {})
+  .then(() => console.log('MongoDB Connected...'))
+  .catch(err => console.log(err))
 
 // Handlebars Middlewear
 app.engine('handlebars', exphbs({
@@ -72,7 +81,8 @@ app.get('/about', (req, res) => {
 app.use('/ideas', ideas)
 app.use('/users', users)
 
-const port = 5000
+const port = process.env.PORT || 5000
+
 app.listen(port, () => {
   console.log(`Server started on port ${port}`)
 })
